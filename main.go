@@ -24,6 +24,12 @@ func main() {
 				Usage:       "Path to HCL configuration file.",
 				Destination: &path,
 			},
+			&cli.StringFlag{
+				Name:        "template",
+				Aliases:     []string{"t"},
+				Usage:       "Set a template variable in the configuration file.",
+				Destination: &template,
+			},
 		},
 	}).Run(os.Args)
 }
