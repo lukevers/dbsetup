@@ -35,8 +35,21 @@ func main() {
 }
 
 func Run(ctx *cli.Context) error {
+	// Open and (eventually) close the database connection
+	err := config.Connection.Connect()
+	defer config.Connection.Close()
 
-	fmt.Println(*config)
+	if err != nil {
+		return err
+	}
+
+	// Truncate all tables specified in the configuration file
+	for _, table := range config.Truncate {
+		fmt.Println("Truncating:", table)
+		if err = db.Exec(fmt.Sprintf("TRUNCATE %s", table)).Error; err != nil {
+			fmt.Println(err)
+		}
+	}
 
 	return nil
 }
