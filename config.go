@@ -33,13 +33,22 @@ func LoadConfig(ctx *cli.Context) error {
 
 	contents := string(bytes)
 
+	// The following template is allowed:
+	//
+	//   key:val&key2:val2
+	//
+	// The delimiter is the `&` character for multiple template updates, and
+	// the delimiter is the `:` character for key/val for each template update.
 	if template != "" {
-		tmpl := strings.Split(template, ":")
-		if len(tmpl) != 2 {
-			return errors.New("A template must be in the form of key:value.")
-		}
+		kvs := strings.Split(template, "&")
+		for _, k := range kvs {
+			tmpl := strings.Split(k, ":")
+			if len(tmpl) != 2 {
+				return errors.New("A template must be in the form of key:value.")
+			}
 
-		contents = strings.Replace(contents, fmt.Sprintf("{{%s}}", tmpl[0]), tmpl[1], -1)
+			contents = strings.Replace(contents, fmt.Sprintf("{{%s}}", tmpl[0]), tmpl[1], -1)
+		}
 	}
 
 	file, err := hcl.Parse(contents)
