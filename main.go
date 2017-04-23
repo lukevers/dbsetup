@@ -54,28 +54,7 @@ func Run(ctx *cli.Context) error {
 	// Run all updates
 	for table, rows := range config.Table {
 		for _, row := range rows {
-
-			var (
-				where string
-				and   string
-			)
-
-			for k, v := range row.Where {
-				if where != "" && and == "" {
-					and = "AND"
-				}
-
-				where = fmt.Sprintf(
-					"%s %s `%s` = '%s'",
-					where,
-					and,
-					k,
-					v,
-				)
-			}
-
-			fmt.Println("Updating row on", table, "where:", where)
-			db.Table(table).Where(where).Updates(row.Update)
+			db.Table(table).Where(row.Where).Updates(row.Update)
 		}
 	}
 
