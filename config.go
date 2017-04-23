@@ -31,7 +31,6 @@ func LoadConfig(ctx *cli.Context) error {
 		return err
 	}
 
-	// Convert the file to a string
 	contents := string(bytes)
 
 	if template != "" {
