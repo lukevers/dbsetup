@@ -1,6 +1,6 @@
 connection {
     driver = "mysql"
-    dsn = ""
+    dsn = "user:pass@tcp(localhost:3306)/database_name?charset=utf8&parseTime=True"
 }
 
 truncate = [
