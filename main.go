@@ -48,7 +48,7 @@ func Run(ctx *cli.Context) error {
 	for _, table := range config.Truncate {
 		fmt.Println(ansi.Color("Truncating:", "green"), table)
 		if err = db.Exec(fmt.Sprintf("TRUNCATE %s", table)).Error; err != nil {
-			fmt.Println(err)
+			fmt.Println(ansi.Color(err, "red"))
 			os.Exit(1)
 		}
 	}
@@ -58,7 +58,7 @@ func Run(ctx *cli.Context) error {
 		for _, row := range rows {
 			fmt.Println(ansi.Color("Updating:", "green"), "where", row.String(row.Where))
 			if err = db.Table(table).Where(row.Sanitize(row.Where)).Updates(row.Sanitize(row.Update)).Error; err != nil {
-				fmt.Println(err)
+				fmt.Println(ansi.Color(err, "red"))
 				os.Exit(1)
 			}
 		}
