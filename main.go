@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/mgutz/ansi"
 	"gopkg.in/urfave/cli.v2"
 	"os"
 )
 
 const (
-	Version = "0.0.0"
+	Version = "0.1.0"
 )
 
 func main() {
@@ -45,16 +46,21 @@ func Run(ctx *cli.Context) error {
 
 	// Truncate all tables specified in the configuration file
 	for _, table := range config.Truncate {
-		fmt.Println("Truncating:", table)
+		fmt.Println(ansi.Color("Truncating:", "green"), table)
 		if err = db.Exec(fmt.Sprintf("TRUNCATE %s", table)).Error; err != nil {
 			fmt.Println(err)
+			os.Exit(1)
 		}
 	}
 
 	// Run all updates
 	for table, rows := range config.Table {
 		for _, row := range rows {
-			db.Table(table).Where(row.Where).Updates(row.Update)
+			fmt.Println(ansi.Color("Updating:", "green"), "where", row.String(row.Where))
+			if err = db.Table(table).Where(row.Sanitize(row.Where)).Updates(row.Sanitize(row.Update)).Error; err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 	}
 
