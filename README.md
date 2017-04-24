@@ -8,6 +8,6 @@ See [example.hcl](example.hcl) for an example configuration file.
 
 As of right now, `=` is the only type of where query supported.
 
-## `NULL` Values
+## NULL Values
 
 To use a `NULL` value in either a where or update map, use the string `"NULL"` and it will be used as `NULL`.
