@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	Version = "0.1.0"
+	Version = "0.2.0"
 )
 
 func main() {
@@ -44,6 +44,12 @@ func Run(ctx *cli.Context) error {
 		return err
 	}
 
+	// Turn off FK checks
+	if err = db.Exec("SET FOREIGN_KEY_CHECKS = 0;").Error; err != nil {
+		fmt.Println(ansi.Color(err.Error(), "red"))
+		os.Exit(1)
+	}
+
 	// Truncate all tables specified in the configuration file
 	for _, table := range config.Truncate {
 		fmt.Println(ansi.Color("Truncating:", "green"), table)
@@ -51,6 +57,12 @@ func Run(ctx *cli.Context) error {
 			fmt.Println(ansi.Color(err.Error(), "red"))
 			os.Exit(1)
 		}
+	}
+
+	// Turn FK checks back on
+	if err = db.Exec("SET FOREIGN_KEY_CHECKS = 1;").Error; err != nil {
+		fmt.Println(ansi.Color(err.Error(), "red"))
+		os.Exit(1)
 	}
 
 	// Run all updates
