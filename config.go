@@ -35,16 +35,16 @@ func LoadConfig(ctx *cli.Context) error {
 
 	// The following template is allowed:
 	//
-	//   key:val&key2:val2
+	//   key := val && key2 := val2
 	//
-	// The delimiter is the `&` character for multiple template updates, and
-	// the delimiter is the `:` character for key/val for each template update.
+	// The delimiter is the ` && ` string for multiple template updates, and
+	// the delimiter is the ` := ` string for key/val for each template update.
 	if template != "" {
-		kvs := strings.Split(template, "&")
+		kvs := strings.Split(template, " && ")
 		for _, k := range kvs {
-			tmpl := strings.Split(k, ":")
+			tmpl := strings.Split(k, " := ")
 			if len(tmpl) != 2 {
-				return errors.New("A template must be in the form of key:value.")
+				return errors.New("A template must be in the form of `key := value`.")
 			}
 
 			contents = strings.Replace(contents, fmt.Sprintf("{{%s}}", tmpl[0]), tmpl[1], -1)
